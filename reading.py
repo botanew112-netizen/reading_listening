@@ -531,8 +531,13 @@ elif mode == "test":
                 )
         with col_q:
             st.markdown("#### ❓ Сұрақтар")
+            st.markdown(
+                "<div style='max-height:600px;overflow-y:auto;padding-right:8px;'>",
+                unsafe_allow_html=True,
+            )
             for i, q in enumerate(qs):
                 render_question(q, q_offset + i + 1, answers)
+            st.markdown("</div>", unsafe_allow_html=True)
 
         q_offset += len(qs)
         st.markdown("---")
