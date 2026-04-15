@@ -523,13 +523,15 @@ elif mode == "test":
         with col_t:
             st.markdown(f"#### 📄 {sec.get('title','')}")
             if passage:
-                st.markdown(
-                    f"<div style='background:#F8F9FA;border-left:4px solid #639922;"
-                    f"border-radius:8px;padding:16px 18px;font-size:14px;"
-                    f"line-height:1.8;height:80vh;overflow-y:auto;"
-                    f"position:sticky;top:60px;'>"
-                    f"{passage.replace(chr(10), '<br>')}</div>",
-                    unsafe_allow_html=True,
+                passage_html = passage.replace(chr(10), '<br>').replace("'", "&#39;")
+                components.html(
+                    f"""<div style='background:#F8F9FA;border-left:4px solid #639922;
+                    border-radius:8px;padding:16px 18px;font-size:14px;
+                    line-height:1.8;height:78vh;overflow-y:auto;
+                    font-family:sans-serif;color:#333;'>
+                    {passage_html}</div>""",
+                    height=int(0.78 * 900),
+                    scrolling=True,
                 )
         with col_q:
             st.markdown("#### ❓ Сұрақтар")
