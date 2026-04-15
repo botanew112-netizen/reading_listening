@@ -1,0 +1,5 @@
+streamlit
+supabase
+Pillow
+pandas
+requests
