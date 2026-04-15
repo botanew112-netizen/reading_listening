@@ -519,13 +519,15 @@ elif mode == "test":
             continue
 
         col_t, col_q = st.columns([1, 1], gap="large")
+
         with col_t:
             st.markdown(f"#### 📄 {sec.get('title','')}")
             if passage:
                 st.markdown(
                     f"<div style='background:#F8F9FA;border-left:4px solid #639922;"
                     f"border-radius:8px;padding:16px 18px;font-size:14px;"
-                    f"line-height:1.8;max-height:600px;overflow-y:auto;'>"
+                    f"line-height:1.8;height:80vh;overflow-y:auto;"
+                    f"position:sticky;top:60px;'>"
                     f"{passage.replace(chr(10), '<br>')}</div>",
                     unsafe_allow_html=True,
                 )
