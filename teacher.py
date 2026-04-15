@@ -100,6 +100,7 @@ def fetch_results_for_journal() -> list:
 
 
 
+def reload_all():
     st.session_state["drafts"]     = fetch_live_drafts()
     st.session_state["ac"]         = fetch_anticheat()
     st.session_state["results"]    = fetch_results()
