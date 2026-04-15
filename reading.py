@@ -10,7 +10,7 @@ from utils import get_supabase
 # ─────────────────────────────────────────
 # КОНФИГ
 # ─────────────────────────────────────────
-READING_SECONDS = 60 * 60  # 60 минут
+READING_SECONDS = 60 * 60  # 60 минут (3 passage)
 
 st.set_page_config(
     page_title="TEN: IELTS Reading",
@@ -501,17 +501,33 @@ st.markdown("---")
 
 answers = st.session_state[ans_key]
 
-# Секция + сұрақтарды рендерлейміз
-q_num = 1
-for sec in test_data["sections"]:
-    sec_title = sec.get("title") or f"Бөлім {sec['order_num']}"
+# Passage навигациясы (3 passage болса)
+sections = test_data["sections"]
+if len(sections) > 1:
+    passage_labels = [s.get("title") or f"Passage {s['order_num']}" for s in sections]
+    sel_passage = st.radio(
+        "📄 Passage таңдаңыз:",
+        passage_labels,
+        horizontal=True,
+        key=f"passage_nav_{skey}"
+    )
+    active_sections = [s for s in sections if (s.get("title") or f"Passage {s['order_num']}") == sel_passage]
+else:
+    active_sections = sections
+
+# Сұрақ нөмірін дұрыс есептеу үшін барлық секциялардағы сұрақтарды санаймыз
+q_offset = 0
+for sec in sections:
+    sec_title = sec.get("title") or f"Passage {sec['order_num']}"
+    if len(sections) > 1 and sec not in active_sections:
+        q_offset += len(sec.get("questions", []))
+        continue
+
     passage   = sec.get("passage_text", "")
     questions = sec.get("questions", [])
-
     if not questions:
         continue
 
-    # Екі баған: сол — мәтін, оң — сұрақтар
     col_text, col_qs = st.columns([1, 1], gap="large")
 
     with col_text:
@@ -526,11 +542,11 @@ for sec in test_data["sections"]:
             )
 
     with col_qs:
-        st.markdown(f"### ❓ Сұрақтар")
-        for q in questions:
-            render_question(q, q_num, answers)
-            q_num += 1
+        st.markdown("### ❓ Сұрақтар")
+        for i, q in enumerate(questions):
+            render_question(q, q_offset + i + 1, answers)
 
+    q_offset += len(questions)
     st.markdown("---")
 
 # Прогресс
