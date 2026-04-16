@@ -518,25 +518,23 @@ elif mode == "test":
         if not qs:
             continue
 
-        col_t, col_q = st.columns([1, 1], gap="large")
+        # Passage жоғарыда — белгілі биіктікте скролл
+        st.markdown(f"#### 📄 {sec.get('title','')}")
+        if passage:
+            st.markdown(
+                f"<div style='background:#F8F9FA;border-left:4px solid #639922;"
+                f"border-radius:8px;padding:16px 18px;font-size:14px;"
+                f"line-height:1.8;height:40vh;overflow-y:auto;'>"
+                f"{passage.replace(chr(10), '<br>')}</div>",
+                unsafe_allow_html=True,
+            )
 
-        with col_t:
-            st.markdown(f"#### 📄 {sec.get('title','')}")
-            if passage:
-                passage_html = passage.replace(chr(10), '<br>').replace("'", "&#39;")
-                components.html(
-                    f"""<div style='background:#F8F9FA;border-left:4px solid #639922;
-                    border-radius:8px;padding:16px 18px;font-size:14px;
-                    line-height:1.8;height:78vh;overflow-y:auto;
-                    font-family:sans-serif;color:#333;'>
-                    {passage_html}</div>""",
-                    height=int(0.78 * 900),
-                    scrolling=True,
-                )
-        with col_q:
-            st.markdown("#### ❓ Сұрақтар")
-            for i, q in enumerate(qs):
-                render_question(q, q_offset + i + 1, answers)
+        st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
+
+        # Сұрақтар төменде — толық көрінеді
+        st.markdown("#### ❓ Сұрақтар")
+        for i, q in enumerate(qs):
+            render_question(q, q_offset + i + 1, answers)
 
         q_offset += len(qs)
         st.markdown("---")
