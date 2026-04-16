@@ -518,20 +518,31 @@ elif mode == "test":
         if not qs:
             continue
 
-        # Passage жоғарыда — белгілі биіктікте скролл
         st.markdown(f"#### 📄 {sec.get('title','')}")
         if passage:
-            st.markdown(
-                f"<div style='background:#F8F9FA;border-left:4px solid #639922;"
-                f"border-radius:8px;padding:16px 18px;font-size:14px;"
-                f"line-height:1.8;height:40vh;overflow-y:auto;'>"
-                f"{passage.replace(chr(10), '<br>')}</div>",
-                unsafe_allow_html=True,
+            passage_safe = (passage
+                .replace('&', '&amp;')
+                .replace('<', '&lt;')
+                .replace('>', '&gt;')
+                .replace('"', '&quot;')
+                .replace(chr(10), '<br>')
+            )
+            components.html(
+                f"""<!DOCTYPE html><html><head>
+                <style>
+                  body{{margin:0;padding:0;font-family:'Segoe UI',sans-serif;
+                       font-size:14px;line-height:1.8;color:#333;background:#F8F9FA;}}
+                  .wrap{{height:98vh;overflow-y:auto;padding:16px 18px;
+                         border-left:4px solid #639922;border-radius:8px;
+                         box-sizing:border-box;}}
+                </style></head><body>
+                <div class="wrap">{passage_safe}</div>
+                </body></html>""",
+                height=400,
+                scrolling=True,
             )
 
-        st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
-
-        # Сұрақтар төменде — толық көрінеді
+        st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
         st.markdown("#### ❓ Сұрақтар")
         for i, q in enumerate(qs):
             render_question(q, q_offset + i + 1, answers)
